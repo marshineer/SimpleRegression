@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def whitening_transform(X, ZCA=False):
     """ Computes a transformation matrix to perform data whitening.
     
