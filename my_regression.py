@@ -1,4 +1,6 @@
 import numpy as np
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
 
 
 def whitening_transform(X, ZCA=False):
@@ -163,7 +165,7 @@ def BinaryEncoder(data, col_ls):
     
     The length of the binary encoding required is calculated based on the number
     of unique categories for each column. The encoded columns are concatenated
-    at the beginning of the data frame.
+    and returned.
     
     This function requires that the categorical data has already been converted
     to be represented by a range of ints. This will be updated in later versions
@@ -179,32 +181,33 @@ def BinaryEncoder(data, col_ls):
     """
     
     # Initialize a label encoder for dealing with non-numericized categories
-    # le = LabelEncoder()
+    le = LabelEncoder()
     
     n_enc_col = 0
+    data_cp = data.copy()
     for i, col in enumerate(col_ls):
-        # # Convert category names to a range of integers
-        # if (data[col].dtype == 'object') or (data[col].dtype == 'category'):
-        #     data[col] = le.fit_transform(data[col])
+        # Convert category names to a range of integers
+        if (data[col].dtype == 'object') or (data[col].dtype == 'category'):
+            data_cp[col] = le.fit_transform(data[col])
         
         # Find the number of unique categories
-        n_cats = len(data[col].unique())
+        n_cats = len(data_cp[col].unique())
         
         # Determine the length of the binary encoding
-        n_dig = len(format(data[col].max(), 'b'))
+        n_dig = len(format(data_cp[col].max(), 'b'))
         n_enc_col += n_dig
         
         # Calculate the encoding for each category
-        bin_enc = np.zeros((len(data), n_dig), dtype=int)
+        bin_enc = np.zeros((len(data_cp), n_dig), dtype=int)
         for n in range(n_cats):
-            inds = data.loc[data[col] == n].index
+            inds = data_cp.loc[data_cp[col] == n].index
             bin_val = [int(x) for x in format(n, f'0{n_dig}b')]
             bin_enc[inds, :] = bin_val
             
         # Assign new column names
         col_names = []
         for d in range(n_dig):
-            col_names.append(f'month{d}')
+            col_names.append(f'{col}_{d}')
         
         # Concatenate the encoded columns
         if i == 0:
