@@ -7,6 +7,7 @@ Collection of Simple Regression Analyses
 This project was undertaken to learn more about regression analyses using the scikit-learn library. It consists of five notebooks analyzing three datasets.
 
 ## Project Descriptions
+TO DO: Update descriptions to use point form for readability. Use 'Overview' and 'Key Takeaways' headers.
 
 ### Heating and Cooling Load Predictor
 
