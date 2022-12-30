@@ -35,10 +35,11 @@ I divided the work on this datasest into three parts.
 	- A more creative analysis can be found [here](https://doi.org/10.3390/su141610107). This is an area of data analysis that I would like to improve on.
 
 2. Feature selection:
-	- Used the sklearn function SelectKBest to score and rank the features according to their cross-correlative relationships (features are continuous, so cannot be scored using mutual information).
-	- Trained a random forest regressor on the full set of features, and used the feature_importances_ to compare these rankings to those found using SelectKBest. Both ranked temp strongly as the most important feature, but after that, there is little agreement between the two methods.
-	- Feature importance is further investigated using recursive feature selection, where the worst-ranked features are sequentially dropped, and the change in performance of the model is assessed using k-fold cross-validation. In hindsight, I should have used adjusted-$R^2$ to properly compared between models with different numbers of features. The features were dropped in two orders, using the SelectKBest ranking and the built-in feature importance attribute, and the results compared. Removing most features had little impact on the $R^2$ score, but there was a sharp drop after removing DMC in both sequences. This is a good indication that DMC is an important feature to the model's performance.
-	- It should be noted that the standard deviation of the cross-validation scores was quite large, so any conclusions made about $R^2$ changes after removing features should be viewed with skepticism. The point I took from this is these drops in performance (after removingn a feature) are the type of indicators I should look for in future analyses. 
+	- Used the sklearn function SelectKBest to score and rank the features.
+	- Trained a random forest regressor, and used the feature_importances_ attribute to compare these rankings to those found using SelectKBest. Both ranked temp strongly as the most important feature, but after that, there is little agreement between the two methods.
+	- Feature importance is investigated using recursive feature selection. There was a sharp drop in the $R^2$ score after removing DMC in both sequences. Therefore, DMC is likely an important feature in these models.
+		- In hindsight, I should have used adjusted-$R^2$ to properly compared between models with different numbers of features
+	- The standard deviation of cross-validation scores was quite large, so any conclusions made about $R^2$ changes after removing features should be viewed with skepticism. The point I took from this is these drops in performance (after removing a feature) are the type of indicators I should look for in future analyses. 
 	- I would imagine that feature importance depends on the model class being used, and if the results are more important, this analysis should be part of a more comprehensive feature selection process. 
 	- I also inadvertently discovered that failing to shuffle the data before performing cross-validation greatly reduced the model performance. This could indicate the data is not well mixed with regard to the target variable, or that there are some ordinal characteristics in the data that bias the model when not accounted for. 
 
@@ -46,8 +47,11 @@ I divided the work on this datasest into three parts.
 	- This incorporated all modelling aspects that I have worked on up to this point.
 	- The categorical features are encoded using a binary encoding. Since scikit-learn does not have a built-in binary encoding function, I wrote one.
 	- I wrote functions to whitening the data, as well as balancing the dataset with regard to particular features, in this case "month".
-	- The feature is balanced three ways: upsampling, dividing the majority class into subsets, and a mixture of the two.
-	- Three different model classes are trained using k-fold cross-validation (with shuffled data to avoid the performance issue identified during feature analysis) and the hyperparameters tuned using scikit-learn's GridSearchCV method.
+	- The feature is balanced three ways: 
+		1. Upsampling
+		2. Dividing the majority class into subsets
+		3. A mixture of the two above methods
+	- Three different model classes are trained using k-fold cross-validation and the hyperparameters tuned using scikit-learn's GridSearchCV method.
 		- Upsampling results in overfitting during training, but does not significantly improve test performance, which makes sense.
 		- Splitting the majority class resulted in worse performance. This could be due to the relatively small training sets that remained after splitting the data.
 	- None of the models performed particularly well, with the best hovering around $R^2 \approx 0$, indicating a trivial fit. This means that simply always predicting the mean target value would perform as well as the trained models.
@@ -55,7 +59,7 @@ I divided the work on this datasest into three parts.
 		- The data is fairly evenly split between the "fire" and "no fire" classes, accounting nicely for the original, zero-skewed target variable (burn area).
 		- Unfortunately, the models trained to classify on whether a fire occurs performed little better than chance.
 		- Since the classification task fails, the regression model is abandoned.
-	- In order to determine whether there were better ways to perform this analysis, I looked online for other people's analyses of this dataset. Most of what I found either consisted of analyses where they agreed with my assessment that the data does not contain enough information for proper classification, those where they performed some kind of transformation or relabelling of the data before applying maching learning, or those where there was either an obvious oversight or what I would consider flawed methodology.
+	Note: In order to determine whether there were better ways to perform this analysis, I looked online for other people's analyses of this dataset. Most of what I found either consisted of analyses where they agreed with my assessment that the data does not contain enough information for proper classification, those where they performed some kind of transformation or relabelling of the data before applying maching learning, or those where there was either an obvious oversight or what I would consider flawed methodology.
 
 A detailed description of my findings can be read in the notebook.
 
@@ -105,8 +109,8 @@ Methods:
 - The models are trained using a randomized parameter search, and the results are compared across the four combinations of data preprocessing:
     1. Shuffled and unnormalized
     2. Unshuffled and unnormalized
-    2. Shuffled and normalized
-    2. Unshuffled and normalized
+    3. Shuffled and normalized
+    4. Unshuffled and normalized
 
 Conclusions and Lessons Learned
 - SVM methods don't scale well with large amounts of data (long training and prediction times). This limits the hyperparameter tuning possible (although the SVR model does not have that many hyperparameters anyway).
