@@ -142,7 +142,7 @@ Conclusions and Lessons Learned
     - However, the individual day/night model's was worse than the single model
     - Maybe because there is less training data?
 
-![What is this section for?](https://github.com/marshineer/SimpleRegression/readme_images/traffic_prediction_distributions.png?raw=true "Model Prediction Distributions")
+![What is this section for?](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_prediction_distributions.png?raw=true "Model Prediction Distributions")
 
 Ideas for future improvements and analysis
 - Unsupervised clustering on the target variable
