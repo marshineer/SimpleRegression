@@ -6,9 +6,13 @@ Collection of Simple Regression Analyses
 ## Project Goal
 This project was undertaken to learn more about regression analyses using the scikit-learn library. It consists of five notebooks analyzing three datasets.
 
+
+
 ## Heating and Cooling Load Predictor
 
 This was the first analysis undertaken. The purpose was to get some practice exploring a dataset, pre-processing and to use the lasypredict library for the first time. In hindsight, I now realize that two of the features are categorical and should have been encoded before running machine learning (ML) on them. Although the data was not formatted properly and the models were not tuned at all, they still achieved an $R^2$ score of 0.90. This indicates that this is likely a relatively easy regression task, so it was a good choice to start with.
+
+
 
 ## Power Plant Output Predictor
 
@@ -19,6 +23,8 @@ I performed data cleaning and a brief exploratory data analysis (EDA), where I o
 ### Neural Network Analysis
 
 I implemented a basic neural network, with three hidden layers. This was probably overkill, although the fact that both the training and test losses are similar indicates it is probably not overfitting. However, the neural network does not perform better than the other machine learning models assessed. Given that the dataset seems to be fairly predictable, I would have thought that a neural network would be able to make nearly a perfect regression prediction. This likely indicates that I am not constructing the model correctly, and need to get more experience in the practicalities of building and training these networks, or that I just do not understand the limitations of neural networks well enough.
+
+
 
 ## Forest Fire Burn Area Dataset
 
@@ -32,6 +38,7 @@ I divided the work on this datasest into three parts.
 - Ran a pandas profile_report()
 - Data exploration (pairplot and correlation plot)
 
+
 ### 2. Feature Selection
 
 - Used the sklearn function SelectKBest to score and rank the features.
@@ -41,6 +48,7 @@ I divided the work on this datasest into three parts.
 - The standard deviation of cross-validation scores was quite large, so any conclusions made about $R^2$ changes after removing features should be viewed with skepticism. The point I took from this is these drops in performance (after removing a feature) are the type of indicators I should look for in future analyses. 
 - I would imagine that feature importance depends on the model class being used, and if the results are more important, this analysis should be part of a more comprehensive feature selection process. 
 - I also inadvertently discovered that failing to shuffle the data before performing cross-validation greatly reduced the model performance. This could indicate the data is not well mixed with regard to the target variable, or that there are some ordinal characteristics in the data that bias the model when not accounted for. 
+
 
 ### 3. Burn Area Prediction
 
@@ -61,6 +69,7 @@ I divided the work on this datasest into three parts.
     - Predicting the mean target value performs as well as the trained model
 ![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/forest_fire_prediction_results.png?raw=true "Confusion Matrices")
 
+
 #### Model Improvement
 - Split the model into two parts:
     1. A classification model to identify whether a fire occurs
@@ -77,6 +86,8 @@ Note: In order to determine whether there were better ways to perform this analy
 
 A detailed description of my findings can be read in the notebook.
 
+
+
 ## Minnesota I-94 Traffic Volume Analysis
 
 This dataset was also analyzed in three parts
@@ -84,6 +95,7 @@ This dataset was also analyzed in three parts
 1. Data pre-processing and EDA
 2. Model selection
 3. Hyperparameter tuning
+
 
 ### 1. Preprocessing and Exploratory Data Analysis
 
@@ -101,13 +113,17 @@ This dataset was also analyzed in three parts
 - People drive mostly during the day on weekdays. Traffic volume peaks at rush hour during the week and mid-afternoon on weekends
 ![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_weekday_weekend_split.png?raw=true "Weekday/Weekend Hourly Distributions")
 
+
 - It doesn't seem to matter what the weather is like, people drive at the same rate regardless
     - Variance is important. Averages would indicate counterintuitive conclusions, like people drive more on hazy days
     - The high variance indicates weather is not a major factor in determining whether people drive
 ![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_weather_effect.png?raw=true "Effects of Weather on Traffic Volume")
 
+
 - The night/day split captures the target variable's bimodality
 ![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_day_night_split.png?raw=true "Day/Night Split of Hourly Distributions")
+
+
 
 ### 2. Model Selection
 
@@ -133,11 +149,12 @@ Goal: Machine learning models are trained and compared to learn more about how e
     - Limits hyperparameter tuning possible
 - Data should not be whitened if the original data's distributions are non-Gaussian
     - Whitening reduced the SVR and XGBoost performance (not shown here)
-- $R^2$ does not tell the whole story (see image below)
+- $R^2$ does not tell the whole story
     - The random forest has a high $R^2$ but is likely overfitting
     - SVR has a much lower $R^2$, but predictions look more realistic
     - This is a reminder that results should be evaluated in more than one way
 ![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_prediction_distributions.png?raw=true "Model Prediction Distributions")
+
 
 - Depending on the model family, normalization may be a critical step
     - Random forest and XGBoost are not affected by normalization (these models are agnostic to the underlying distribution)
@@ -151,6 +168,7 @@ Goal: Machine learning models are trained and compared to learn more about how e
     - Maybe because there is less training data?
 ![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_day_night_predictions_ml.png?raw=true "Day/Night Expert Model Prediction Distributions")
 
+
 #### Ideas for future improvements and analysis
 - Unsupervised clustering on the target variable
     - Train expert models on these clusters
@@ -160,19 +178,23 @@ Goal: Machine learning models are trained and compared to learn more about how e
 - Calculating the variance explained by a day/night boolean feature
 
 
+
 #### Neural Network (NN) Model
 Can a simple neural network perform better than other ML methods, with minimal tuning?
 
 In most resources I found regarding neural networks for multimodal regression, it was suggested the data should be divided into its component modalities. Here, this is done by finding a natural division in the data (day/night in this case), and two separate "expert" models are trained.
 
 #### Conclusions and Lessons Learned
-- The single NN model performed nearly as well as the XGBoost model
+- The neural network and XGBoost models have a similar $R^2$ scores
 ![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_nn_predictions.png?raw=true "Neural Network Prediction Distributions")
 
-- The separate day/night models evaluate similarly to those of the XGBoost model
+- The separate day/night neural network and XGBoost models also have similar $R^2$ scores
+    - However, the neural network distribution seems to fit the true distribution better
     - Something seems off here: The separate model $R^2$ scores are quite low, but the concatenated output and prediction vectors calculate to a much better $R^2$. This seems like it's somehow accounting for the missing data, although I'm not sure how this is possible.
-- Similar performance between the combined day/night expert models and the baseline neural network
 ![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_day_night_predictions_nn.png?raw=true "Day/Night Neural Network Prediction Distributions")
+
+- Similar performance between the combined day/night expert models and the baseline neural network
+
 
 
 ### 3. Hyperparameter Tuning
