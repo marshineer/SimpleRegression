@@ -44,7 +44,7 @@ I divided the work on this datasest into three parts.
 
 ### 3. Burn Area Prediction
 
-Further preprocessing
+#### Further preprocessing
 - Incorporated all modelling aspects to this point
 - The categorical features are binary encoded (wrote a custom binary encoding function)
 - Whitened the data (wrote custom whitening function)
@@ -53,7 +53,7 @@ Further preprocessing
     2. Dividing the majority class into subsets
     3. A mixture of the two above methods
 
-Model Selection
+#### Model Selection
 - Three different model classes trained (sklearn's GridSearchCV using k-fold cross-validation)
     - Upsampling -> overfitting (does not significantly improve test performance)
     - Splitting the majority class -> worse performance (relatively small training sets after splitting)
@@ -61,7 +61,7 @@ Model Selection
     - Predicting the mean target value performs as well as the trained model
 ![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/forest_fire_prediction_results.png?raw=true "Confusion Matrices")
 
-Model Improvement
+#### Model Improvement
 - Split the model into two parts:
     1. A classification model to identify whether a fire occurs
     2. A regression model to estimate the size of a fire, if one is predicted to occur
@@ -87,7 +87,7 @@ This dataset was also analyzed in three parts
 
 ### 1. Preprocessing and Exploratory Data Analysis
 
-Preprocessing steps:
+#### Preprocessing steps
 - Checked for NaNs and missing values
 - Investigated suspicious values in "temp", "rain_1h" and "snow_1h"
 - Removed duplicated date-time rows (occurred when multiple weather categories applied)
@@ -97,15 +97,15 @@ Preprocessing steps:
 - Encoded all categorical features using either cyclical or binary encoding
 - Normalized the numerical data
 
-EDA Takeaways
+#### EDA Takeaways
 - People drive mostly during the day on weekdays. Traffic volume peaks at rush hour during the week and mid-afternoon on weekends
 ![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_weekday_weekend_split.png?raw=true "Weekday/Weekend Hourly Distributions")
 
 - It doesn't seem to matter what the weather is like, people drive at the same rate regardless
+    - Variance is important. Averages would indicate counterintuitive conclusions, like people drive more on hazy days
+    - The high variance indicates weather is not a major factor in determining whether people drive
 ![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_weather_effect.png?raw=true "Effects of Weather on Traffic Volume")
 
-- Variance is important. Averages would indicate counterintuitive conclusions, like people drive more on hazy days
-- The high variance indicates weather is not a major factor in determining whether people drive
 - The night/day split captures the target variable's bimodality
 ![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_day_night_split.png?raw=true "Day/Night Split of Hourly Distributions")
 
@@ -113,14 +113,14 @@ EDA Takeaways
 
 Goal: Machine learning models are trained and compared to learn more about how each model class reacts to different preprocessing techniques. These models are later compared to the performance of a neural network, which should be the most flexible (and least interpretable) model class tested. 
 
-Further Preprocessing:
+#### Further Preprocessing
 - Split the data into train and test sets in two different ways
     1. Shuffle all the data, and split by a train:test fraction
     2. Leave the data ordered and pull out a single year
 - Normalize data to the range [0, 1]
     - Normalization required after splitting, because test data must be normalized using training values
 
-Training:
+#### Training
 - Three different model classes are trained:
     1. Random Forest
     2. SVR
@@ -128,7 +128,7 @@ Training:
 - Models are trained using sklearn's RandomsearchCV
 - Results compared between the four preprocessing combinations (shuffled/unshuffled and normalized/unnormalized)
 
-Conclusions and Lessons Learned
+#### Conclusions and Lessons Learned
 - SVM methods don't scale well (long training and prediction times)
     - Limits hyperparameter tuning possible
 - Data should not be whitened if the original data's distributions are non-Gaussian
@@ -151,7 +151,7 @@ Conclusions and Lessons Learned
     - Maybe because there is less training data?
 ![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_day_night_predictions_ml.png?raw=true "Day/Night Expert Model Prediction Distributions")
 
-Ideas for future improvements and analysis
+#### Ideas for future improvements and analysis
 - Unsupervised clustering on the target variable
     - Train expert models on these clusters
 - Randomized grid search followed by hyperparameter tuning
@@ -160,12 +160,12 @@ Ideas for future improvements and analysis
 - Calculating the variance explained by a day/night boolean feature
 
 
-Neural Network (NN) Model
+#### Neural Network (NN) Model
 Can a simple neural network perform better than other ML methods, with minimal tuning?
 
 In most resources I found regarding neural networks for multimodal regression, it was suggested the data should be divided into its component modalities. Here, this is done by finding a natural division in the data (day/night in this case), and two separate "expert" models are trained.
 
-Conclusions and Lessons Learned
+#### Conclusions and Lessons Learned
 - The single NN model performed nearly as well as the XGBoost model
 ![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_nn_predictions.png?raw=true "Neural Network Prediction Distributions")
 
@@ -177,7 +177,7 @@ Conclusions and Lessons Learned
 
 ### 3. Hyperparameter Tuning
 
-Comparison of Random Parameter Search
+#### Comparison of Random Parameter Search
 - Look at the parameter ranges corresponding to well-performing models
     - Which parameters have strict ranges for good performance and which are more robust?
 - Few parameters show a clear trend in performance
@@ -186,7 +186,7 @@ Comparison of Random Parameter Search
 - Once a suitable range is determined, the parameters could be further tuned with an exhaustive grid search
 - Further statistical tests are possible for model selection
 
-Conclusions and Lessons Learned
+#### Conclusions and Lessons Learned
 - There are three patterns to the parameter distributions:
     1. An even distribution of parameter values and consistent $R^2$ score (model is robust to the value)
     2. An clear best parameter across most models (eg. "min_samples_split" in the random forest model)
