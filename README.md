@@ -59,6 +59,7 @@ Model Selection
     - Splitting the majority class -> worse performance (relatively small training sets after splitting)
 - The best model had an $R^2 \approx 0$ (trivial fit)
     - Predicting the mean target value performs as well as the trained model
+![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/forest_fire_prediction_results.png?raw=true "Confusion Matrices")
 
 Model Improvement
 - Split the model into two parts:
@@ -98,10 +99,15 @@ Preprocessing steps:
 
 EDA Takeaways
 - People drive mostly during the day on weekdays. Traffic volume peaks at rush hour during the week and mid-afternoon on weekends
+![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_weekday_weekend_split.png?raw=true "Weekday/Weekend Hourly Distributions")
+
 - It doesn't seem to matter what the weather is like, people drive at the same rate regardless
+![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_weather_effect.png?raw=true "Effects of Weather on Traffic Volume")
+
 - Variance is important. Averages would indicate counterintuitive conclusions, like people drive more on hazy days
 - The high variance indicates weather is not a major factor in determining whether people drive
 - The night/day split captures the target variable's bimodality
+![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_day_night_split.png?raw=true "Day/Night Split of Hourly Distributions")
 
 ### 2. Model Selection
 
@@ -131,6 +137,8 @@ Conclusions and Lessons Learned
     - The random forest has a high $R^2$ but is likely overfitting
     - SVR has a much lower $R^2$, but predictions look more realistic
     - This is a reminder that results should be evaluated in more than one way
+![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_prediction_distributions.png?raw=true "Model Prediction Distributions")
+
 - Depending on the model family, normalization may be a critical step
     - Random forest and XGBoost are not affected by normalization (these models are agnostic to the underlying distribution)
     - SVR's performance is greatly improved with normalization
@@ -141,15 +149,14 @@ Conclusions and Lessons Learned
     - It was expected that the individual expert models would have better performance than the single model
     - However, the individual day/night model's was worse than the single model
     - Maybe because there is less training data?
-
-![What is this section for?](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_prediction_distributions.png?raw=true "Model Prediction Distributions")
+![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_day_night_predictions_ml.png?raw=true "Day/Night Expert Model Prediction Distributions")
 
 Ideas for future improvements and analysis
 - Unsupervised clustering on the target variable
     - Train expert models on these clusters
 - Randomized grid search followed by hyperparameter tuning
 - Removing features with high zero frequency (eg. rain_1h)
-    - Use adjusted-$R^2$ to measure this
+    - Use adjusted $R^2$ to measure this
 - Calculating the variance explained by a day/night boolean feature
 
 
@@ -160,9 +167,12 @@ In most resources I found regarding neural networks for multimodal regression, i
 
 Conclusions and Lessons Learned
 - The single NN model performed nearly as well as the XGBoost model
+![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_nn_predictions.png?raw=true "Neural Network Prediction Distributions")
+
 - The separate day/night models evaluate similarly to those of the XGBoost model
     - Something seems off here: The separate model $R^2$ scores are quite low, but the concatenated output and prediction vectors calculate to a much better $R^2$. This seems like it's somehow accounting for the missing data, although I'm not sure how this is possible.
 - Similar performance between the combined day/night expert models and the baseline neural network
+![](https://github.com/marshineer/SimpleRegression/blob/main/readme_images/traffic_day_night_predictions_nn.png?raw=true "Day/Night Neural Network Prediction Distributions")
 
 
 ### 3. Hyperparameter Tuning
